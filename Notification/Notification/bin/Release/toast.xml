@@ -1,0 +1,8 @@
+<toast activationType='foreground' launch='args'>
+    <visual>
+        <binding template='ToastGeneric'>
+            <text>test</text>
+            <text>testtest</text>
+        </binding>
+    </visual>
+</toast>

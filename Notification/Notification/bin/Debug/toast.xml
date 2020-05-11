@@ -1,0 +1,10 @@
+<toast scenario='reminder' activationType='foreground' launch='args'>
+    <visual>
+        <binding template='ToastGeneric'>
+            <text></text>
+        </binding>
+    </visual>
+    <actions>
+        <action activationType='foreground' arguments='' content='‚È‚ñ‚©ƒ{ƒ^ƒ“' />
+    </actions>
+</toast>
