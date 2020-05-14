@@ -3,7 +3,9 @@ Imports System.IO
 Imports System.Text
 Imports System.Threading
 Imports System.Threading.Thread
+Imports Notification.DesktopNotifications
 Imports Windows.Data
+Imports Windows.Data.Xml.Dom
 Imports Windows.UI.Notifications
 
 Public Class TopForm
@@ -47,13 +49,36 @@ Public Class TopForm
 
         Me.MaximizeBox = False
 
-        'データベース接続
-        cnn.Open(DB_Notification)
 
-        'タイマコールバック関数
-        Dim timerDelegate As TimerCallback = New TimerCallback(AddressOf TimerEvent)
-        'タイマ生成（コールバック関数の設定）
-        mtimer = New Timer(timerDelegate, Nothing, 0, 10000)
+        DesktopNotificationManagerCompat.RegisterAumidAndComServer(Of MyNotificationActivator)("YourCompany.YourApp")
+        DesktopNotificationManagerCompat.RegisterActivator(Of MyNotificationActivator)()
+
+        ''データベース接続
+        'cnn.Open(DB_Notification)
+
+        ''タイマコールバック関数
+        'Dim timerDelegate As TimerCallback = New TimerCallback(AddressOf TimerEvent)
+        ''タイマ生成（コールバック関数の設定）
+        'mtimer = New Timer(timerDelegate, Nothing, 0, 10000)
+    End Sub
+
+    Private Sub showToast()
+        Dim toastContent As New Microsoft.Toolkit.Uwp.Notifications.ToastContent() With {
+            .Scenario = Microsoft.Toolkit.Uwp.Notifications.ToastScenario.Reminder,
+            .Launch = "action=viewConversation&conversationId=5",
+            .Visual = New Microsoft.Toolkit.Uwp.Notifications.ToastVisual() With {
+                .BindingGeneric = New Microsoft.Toolkit.Uwp.Notifications.ToastBindingGeneric()
+            }
+        }
+
+        Dim doc As New XmlDocument()
+        doc.LoadXml(toastContent.GetContent())
+
+        Dim toast As New ToastNotification(doc)
+
+        DesktopNotificationManagerCompat.CreateToastNotifier().Show(toast)
+        'ToastNotificationManager.CreateToastNotifier("Microsoft.Windows.Computer").Show(toast)
+
     End Sub
 
     ''' <summary>
@@ -98,10 +123,16 @@ Public Class TopForm
             Dim content As Xml.Dom.XmlDocument = New Xml.Dom.XmlDocument()
             content.LoadXml(xmlStr)
             content.GetElementsByTagName("text").First().AppendChild(content.CreateTextNode(displayStr))
-            Dim notifier As ToastNotifier = ToastNotificationManager.CreateToastNotifier("Microsoft.Windows.Computer")
-            Dim tn As New ToastNotification(content)
 
-            notifier.Show(tn)
+
+            'Dim notifier As ToastNotifier = ToastNotificationManager.CreateToastNotifier("Microsoft.Windows.Computer")
+
+            Dim notifier As ToastNotifier = DesktopNotifications.DesktopNotificationManagerCompat.CreateToastNotifier()
+
+
+            Dim toast As New ToastNotification(content)
+
+            notifier.Show(toast)
         Next
     End Sub
 
@@ -111,7 +142,7 @@ Public Class TopForm
     ''' <param name="state">このデリゲートで呼び出されたメソッドに関連するアプリケーション固有の情報を格納するオブジェクト</param>
     Private Sub TimerEvent(ByVal state As Object)
         '
-        Invoke(New LoadNotificationDelegate(AddressOf LoadNotification), New Object() {})
+        'Invoke(New LoadNotificationDelegate(AddressOf LoadNotification), New Object() {})
     End Sub
 
     Private Sub test()
@@ -132,6 +163,6 @@ Public Class TopForm
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        NoticeNewData(notificationDt)
+        showToast()
     End Sub
 End Class

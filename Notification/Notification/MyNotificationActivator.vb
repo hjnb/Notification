@@ -10,6 +10,7 @@ Public Class MyNotificationActivator
 
     Public Overrides Sub OnActivated(arguments As String, userInput As NotificationUserInput, appUserModelId As String)
         '
+        MsgBox("aa")
 
     End Sub
 End Class

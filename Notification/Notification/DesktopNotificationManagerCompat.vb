@@ -42,7 +42,6 @@ Imports System.Linq
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports Windows.UI.Notifications
-Imports DesktopNotifications.NotificationActivator
 
 Namespace DesktopNotifications
     Public Class DesktopNotificationManagerCompat
@@ -50,7 +49,7 @@ Namespace DesktopNotifications
 
         Private Shared _registeredAumidAndComServer As Boolean
         Private Shared _aumid As String
-        Private Shared _registeredActivator As String
+        Private Shared _registeredActivator As Boolean
 
         Public Shared Sub RegisterAumidAndComServer(Of T As {NotificationActivator, New})(aumid As String)
             If (String.IsNullOrWhiteSpace(aumid)) Then
